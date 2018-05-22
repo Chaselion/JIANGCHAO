@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation=" 
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+          http://www.springframework.org/schema/tx 
+          http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+          http://www.springframework.org/schema/context 
+          http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+          http://www.springframework.org/schema/aop 
+          http://www.springframework.org/schema/aop/spring-aop-4.0.xsd" default-autowire="byName">
+	<!-- SERVICE start -->
+	<bean id="fileStoreService" class="com.zy.dmop.filestore.service.FileStoreService">
+		<property name="delegateService" ref="${ivt-filestore.service.impl}" />
+	</bean>
+	
+	<bean id="sambaFileStoreService" init-method="init" class="com.zy.dmop.filestore.service.impl.SambaFileStoreService">
+		<property name="username" value="${ivt-filestore.service.samba.username}"></property>
+		<property name="password" value="${ivt-filestore.service.samba.password}"></property>
+		<property name="ip" value="${ivt-filestore.service.samba.ip}"></property>
+		<property name="rootPath" value="${ivt-filestore.service.samba.rootPath}"></property>
+	</bean>
+	
+	<bean id="localFileStoreService" class="com.zy.dmop.filestore.service.impl.LocalFileStoreService">
+		<property name="rootPath" value="${ivt-filestore.service.local.rootPath}"></property>
+	</bean>
+	<!-- SERVICE end -->
+</beans>

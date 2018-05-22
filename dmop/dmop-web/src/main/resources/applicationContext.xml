@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation=" 
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+          http://www.springframework.org/schema/tx 
+          http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+          http://www.springframework.org/schema/context 
+          http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+          http://www.springframework.org/schema/aop 
+          http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+          http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+          http://www.springframework.org/schema/context/spring-context-4.1.xsd
+          http://www.springframework.org/schema/task 
+          http://www.springframework.org/schema/task/spring-task-4.1.xsd" default-autowire="byName">
+         
+		
+		
+		<!-- 注意上面的default-autowire="byName"，如果没有这个声明那么HibernateDaoSupport中的sessionFactory不会被注入 -->
+		
+		<!-- 约定优于配置，约定优于配置 -->
+	
+	
+	<!-- 自动扫描组件，这里要把web下面的 controller去除，他们是在spring3-servlet.xml中配置的，如果不去除会影响事务管理的。-->
+	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.zy.dmop">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	<!-- spring注解式事物  begin！！！！！-->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="logisticDataSource"></property>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!--spring注解式事物 改动  end！！！！！-->
+	<!--报警引擎线程启动-->
+	<!-- <bean id="alarmEngine" class="com.zy.dmop.web.alarm.core.AlarmEngine" init-method="init">
+	</bean> -->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" 
+		p:host-name="192.168.20.223" p:port="6379" p:use-pool="true" >
+	</bean>
+	
+	<bean id="redisTemplate" 
+	    class="org.springframework.data.redis.core.RedisTemplate" 
+	    p:connection-factory-ref="jedisConnectionFactory">
+	    <property name="keySerializer">  
+	        <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />  
+	    </property>
+	    <property name="valueSerializer">  
+	        <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />  
+	    </property>
+	</bean>
+	
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="logisticDataSource" />
+	</bean>
+	
+	<bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+	
+	<bean id="logisticDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>jdbc:mysql://localhost:3306/dmop_test?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false</value>
+		</property>
+		<property name="user">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>123456</value>
+		</property>
+		<property name="maxPoolSize" value="50"></property>    
+		<property name="minPoolSize" value="10"></property>    
+		<property name="initialPoolSize" value="10"></property>            
+		<property name="acquireIncrement" value="1"></property>    
+		<property name="maxIdleTime" value="20"></property>	
+	</bean>
+	<bean id="httpUtil" class="com.zy.dmop.baidumap.HttpUtil">
+		<property name="useProxy" value="false" />
+        <property name="proxyHost" value="proxynj.zte.com.cn" />
+		<property name="proxyPort" value="80" />
+		<property name="proxyUserName" value="" />
+		<property name="proxyPassword" value="" />
+    </bean>
+	<bean id="gps2BaiduCoordConvertor" class="com.zy.dmop.baidumap.GPS2BaiduCoordConvertor">
+		<property name="httpUtil" ref="httpUtil" />
+		<property name="from" value="1" />
+        <property name="to" value="5" />
+		<property name="ak" value="bP6WvGH3fMdKMxhEDGlgLox7Nkze4c4R" />
+		<property name="host" value="api.map.baidu.com" />
+		<property name="path" value="/geoconv/v1/" />
+    </bean>
+	<!--判断客户是否到期线程-->
+	<bean id="ifCustomExpire" class="com.zy.dmop.web.alarm.core.IfCustomExpire" init-method="init" />
+	<!--告警线程-->
+	<bean id="engineThread" class="com.zy.dmop.web.alarm.core.EngineThread_LogForTest" init-method="init" />
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+	<!-- <aop:config>  
+        Spring 2.0 可以用 AspectJ 的语法定义 Pointcut，这里自定义要拦截方法的包所在    
+        <aop:advisor id="methodTimeLog1" advice-ref="methodTimeAdvice" pointcut="execution(* com.zy.dmop.api.alarm.dao..*.*(..))"/>
+        <aop:advisor id="methodTimeLog2" advice-ref="methodTimeAdvice" pointcut="execution(* com.zy.dmop.api.web.dao..*.*(..))"/>
+        <aop:advisor id="methodTimeLog3" advice-ref="methodTimeAdvice" pointcut="execution(* com.zy.dmop.resource.dao..*.*(..))"/>  
+    </aop:config>  --> 
+    <bean id="methodTimeAdvice" class="com.zy.dmop.servlet.MethodTimeActive"/> 
+</beans>

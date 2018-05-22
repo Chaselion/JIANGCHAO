@@ -1,0 +1,51 @@
+function checkByRuleWithoutError(data,type){
+	switch (type)
+	{
+	case 0:
+		return true;
+	case 1:
+		return true;
+	case 2:
+		return true;
+	case 3:
+		return data<100;
+	case 4:
+		return data>0.18;
+	case 5:
+		return data>500;
+	case 6:
+		return data<70;
+	case 7:
+		return data<0.08;
+	case 8:
+		return data>500;
+	case 9:
+		return data<5;
+	case 10:
+		return true;
+	case 11:
+		return true;
+	case 12:
+		return data<1;
+	case 13:
+		return data>1.8;
+	case 14:
+		return data<400;
+	case 15:
+		return data>60;
+	case 16:
+		return data>30;
+	case 17:
+		return data<80;
+	case 18:
+		return data;
+	case 19:
+		return data<0.15;
+	case 20:
+		return data;
+	case 21:
+		return data<2.75;
+	case 22:
+		return data<0.2;
+	}
+}

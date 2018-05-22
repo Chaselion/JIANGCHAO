@@ -1,0 +1,65 @@
+.regionpick {
+	position:absolute;
+	background:#fff;
+	top:100px;
+	left:20px;
+	padding:4px;
+	margin-top:0;
+	border: 1px solid #cdcdcd;
+    z-index: 10000;
+	
+	width: 387px; 
+	height: 340px;
+	/*height: 393px;*/
+}
+
+table.regionpick-cities td {
+	vertical-align:top;
+}
+
+table.regionpick-cities a {
+	white-space: nowrap;
+    margin-right: 9px;
+    line-height: 18px;
+}
+    
+.regionpick-td-letter {
+    font-size: 24px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #ccc;
+    padding: 0 12px;
+    margin: 0;
+}
+
+.regionpick-td-province {
+	padding-right:8px;
+	font-weight:700;
+	color:#4d98dd;
+	white-space: nowrap;
+}
+
+.regionpick-close {
+	float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+}
+button.regionpick-close {
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    -webkit-appearance: none;
+}
+
+.regionpick-close:hover, .regionpick-close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+    filter: alpha(opacity=50);
+}

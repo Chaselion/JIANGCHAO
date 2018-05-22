@@ -1,0 +1,14 @@
+.btn-collapse-border {
+	height:32px;
+}
+
+.btn-expand-border {
+	height:39px;
+	margin-bottom:-5px;
+}
+
+.ztree-resource {
+	height: 300px;
+	overflow-y: scroll;
+	overflow-x: auto;
+}

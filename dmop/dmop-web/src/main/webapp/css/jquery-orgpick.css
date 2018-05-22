@@ -1,0 +1,40 @@
+.orgpick {
+	position:absolute;
+	background:#fff;
+	top:100px;
+	left:20px;
+	padding:4px;
+	margin-top:0;
+	border: 1px solid #cdcdcd;
+    z-index: 10000;
+	
+	width: 387px; 
+	/*height: 340px;*/
+	/*height: 393px;*/
+}
+
+
+.orgpick-close {
+	float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+}
+button.orgpick-close {
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    -webkit-appearance: none;
+}
+
+.orgpick-close:hover, .orgpick-close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+    filter: alpha(opacity=50);
+}
